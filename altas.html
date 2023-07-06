@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar producto</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+    <h1>Agregar clientes a la nómina</h1>
+    <div class="img"><img src="img/Captura de pantalla 2023-07-03 202421.png" alt="codoacodo" width="100px"></div>
+    <h3>Base de clientes</h3>
+    <form id="formulario">
+        <label for="cuit">CUIT:</label>
+        <input type="number" id="cuit" name="cuit" required><br>
+
+        <label for="razonSocial">Razón social:</label>
+        <input type="text" id="razonSocial" name="razonSocial" required><br>
+
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" required><br>
+
+        <label for="contacto">Teléfono:</label>
+        <input type="number" id="contacto" name="contacto" required><br>
+
+        <button type="submit">Agregar Cliente</button>
+        <a href="index.html">Menu principal</a>
+    </form>
+
+    <script>
+        //const URL = "http://127.0.0.1:5000/"
+        const URL = "https://vanyfer.pythonanywhere.com/"
+
+        // Capturamos el evento de envío del formulario
+        document.getElementById('formulario').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evitamos que se envie el form por ahora
+
+            // Obtenemos los valores del formulario
+            var cuit = document.getElementById('cuit').value;
+            var razonSocial = document.getElementById('razonSocial').value;
+            var direccion = document.getElementById('direccion').value;
+            var contacto = document.getElementById('contacto').value;
+
+            // Validamos el CUIT
+            if (cuit.length !== 11) {
+                alert('Ingrese exactamente 11 dígitos en el campo CUIT.');
+                return;
+            }
+
+            // Creamos un objeto con los datos del producto
+            var cliente = {
+                cuit: cuit,
+                razonSocial: razonSocial,
+                direccion: direccion,
+                contacto: contacto
+            };
+
+            console.log(cliente)
+            // Realizamos la solicitud POST al servidor
+            fetch(URL + 'clientes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(cliente)
+            })
+                .then(function (response) {
+                    // Código para manejar la respuesta
+                    if (response.ok) {
+                        return response.json(); // Parseamos la respuesta JSON
+                    } else {
+                        // Si hubo un error, lanzar explícitamente una excepción
+                        // para ser "catcheada" más adelante
+                        throw new Error('Error al agregar el cliente.');
+                    }
+                })
+                .then(function (data) {
+                    alert('Cliente agregado correctamente.');
+                    //Limpiamos el formulario.
+                    document.getElementById('cuit').value = "";
+                    document.getElementById('razonSocial').value = "";
+                    document.getElementById('direccion').value = "";
+                    document.getElementById('contacto').value = "";
+                })
+                .catch(function (error) {
+                    // Código para manejar errores
+                    alert('Error al agregar el cliente.');
+                });
+        })
+    </script>
+</body>
+
+</html>

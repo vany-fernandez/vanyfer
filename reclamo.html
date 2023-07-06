@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Reclamo</title>
+    <link rel="stylesheet" href="css/estilos.css">
+
+</head>
+
+<body>
+    <h1>Formulario de Reclamo</h1>
+    <div class="img"><img src="img/Captura de pantalla 2023-07-03 202421.png" alt="codoacodo" width="100px"></div>
+    <h3>Base de clientes</h3>
+    <form id="reclamoForm">
+        <label for="fecha">Fecha:</label>
+        <input type="date" id="fecha" required><br>
+
+        <label for="hora">Hora:</label>
+        <input type="time" id="hora" required><br>
+
+        <label for="razonSocial">Razón Social:</label>
+        <select id="razonSocial" required>
+            <option value="">Seleccione una opción</option>
+        </select><br>
+
+        <label for="reclamo">Reclamo:</label>
+        <textarea id="reclamo" required></textarea><br>
+
+        <button type="submit">Enviar Reclamo</button>
+        <a href="index.html">Menú Principal</a>
+    </form>
+
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        (function () {
+    const app = Vue.createApp({
+        data() {
+            return {
+                razonSocialOptions: [],
+                razonSocial: '',
+                fecha: '',
+                hora: '',
+                reclamo: ''
+            }
+        },
+        mounted() {
+            // Obtener las opciones de Razón Social desde el servidor
+            fetch('/clientes')
+                .then(response => response.json())
+                .then(data => {
+                    this.razonSocialOptions = data;
+                })
+                .catch(error => {
+                    console.error('Error al obtener las opciones de Razón Social:', error);
+                });
+        },
+        methods: {
+            enviarReclamo() {
+                // Obtener los valores de los campos del formulario
+                const fecha = this.fecha;
+                const hora = this.hora;
+                const razonSocial = this.razonSocial;
+                const reclamo = this.reclamo;
+
+                // Enviar los datos del reclamo al servidor (puedes adaptar esto según tu necesidad)
+                fetch('/ruta/hacia/backend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fecha: fecha,
+                        hora: hora,
+                        razonSocial: razonSocial,
+                        reclamo: reclamo
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Reclamo enviado correctamente", data);
+                        alert("Reclamo enviado correctamente");
+                        document.getElementById('reclamoForm').reset(); // Limpiar el formulario después del envío
+                    })
+                    .catch(error => {
+                        console.error("Error al enviar el reclamo", error);
+                        alert("Error al enviar el reclamo");
+                    });
+            }
+        }
+    });
+
+    app.mount('#app');
+})();
+    </script>
+</body>
+
+</html>

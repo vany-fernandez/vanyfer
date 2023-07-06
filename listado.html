@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Clientes</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+    <h1>Listado de Clientes</h1>
+    <div class="img"><img src="img/Captura de pantalla 2023-07-03 202421.png" alt="codoacodo" width="100px"></div>
+    <h3>Base de clientes</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>CUIT</th>
+                <th>Razón Social</th>
+                <th>Dirección</th>
+                <th aligne="right">Teléfono</th>
+            </tr>
+        </thead>
+        <tbody id="tablaClientes">
+        </tbody>
+    </table>
+
+    <div class="contenedor-centrado">
+        <a href="index.html">Menu principal</a>
+    </div>
+
+    <script>
+        //const URL = "http://127.0.0.1:5000/"
+        const URL = "https://vanyfer.pythonanywhere.com/"
+
+        // Realizamos la solicitud GET al servidor para obtener todos los productos
+        fetch(URL + 'clientes')
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json(); // Parseamos la respuesta JSON
+                } else {
+                    // Si hubo un error, lanzar explícitamente una excepción
+                    // para ser "catcheada" más adelante
+                    throw new Error('Error al obtener los clientes.');
+                }
+            })
+            .then(function (data) {
+                var tablaClientes = document.getElementById('tablaClientes');
+
+                // Iteramos sobre los productos y agregamos filas a la tabla
+                data.forEach(function (cliente) {
+                    var fila = document.createElement('tr');
+                    fila.innerHTML = '<td>' + cliente.cuit + '</td>' +
+                        '<td>' + cliente.razonSocial + '</td>' +
+                        '<td align="right">' + cliente.direccion + '</td>' +
+                        '<td align="right">&nbsp; &nbsp;&nbsp; &nbsp;' + cliente.contacto + '</td>';
+                    tablaClientes.appendChild(fila);
+                });
+            })
+            .catch(function (error) {
+                // Código para manejar errores
+                alert('Error al obtener los clientes.');
+            });
+    </script>
+</body>
+</html>
